@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <!--Menu-->
+    <v:String x:Key="ui_file">File</v:String>
+    <v:String x:Key="ui_open_file">Open file</v:String>
+    <v:String x:Key="ui_language">Language</v:String>
+    <v:String x:Key="ui_view">View</v:String>
+    <v:String x:Key="ui_view_settings">Settings</v:String>
+    <v:String x:Key="ui_exit">Exit</v:String>
+    <!--endMenu-->
+
+    <!--MenuHelp-->
+    <!--endMenuHelp-->
+
+    <!--Controls-->
+    <v:String x:Key="ui_play">Play</v:String>
+    <v:String x:Key="ui_pause">Pause</v:String>
+    <v:String x:Key="ui_stop">Stop</v:String>
+    <!--endControls-->
+
+    <!--ControlsHelp-->
+    <v:String x:Key="ui_play_help">Start or continue media playback. If the file has not been selected yet, an error message will be displayed.</v:String>
+    <v:String x:Key="ui_pause_help">Pause the media</v:String>
+    <v:String x:Key="ui_stop_help">Stop the media file</v:String>
+    <v:String x:Key="ui_volume_scroll">Volume:</v:String>
+    <!--endControlsHelp-->
+
+    <!--FooterInfoBar-->
+    <v:String x:Key="ui_footer_no_data">Error: No data</v:String>
+    <!--endFooterInfoBar-->
+
+    <v:String x:Key="ui_no_translate">No realized</v:String>
+</ResourceDictionary>
