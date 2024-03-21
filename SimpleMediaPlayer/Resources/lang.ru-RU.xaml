@@ -7,6 +7,10 @@
     <v:String x:Key="ui_language">Язык</v:String>
     <v:String x:Key="ui_view">Вид</v:String>
     <v:String x:Key="ui_view_settings">Настройки</v:String>
+    <v:String x:Key="ui_view_fullscreen">Полный экран</v:String>
+    <v:String x:Key="ui_view_dropscreen">Свернуть</v:String>
+    <v:String x:Key="ui_view_normalscreen">Стандартный размер</v:String>
+    <v:String x:Key="ui_view_header">Показать/скрыть шапку</v:String>
     <v:String x:Key="ui_exit">Выход</v:String>
     <!--endMenu-->
 

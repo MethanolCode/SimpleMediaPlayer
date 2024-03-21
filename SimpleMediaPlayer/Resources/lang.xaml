@@ -7,7 +7,11 @@
     <v:String x:Key="ui_language">Language</v:String>
     <v:String x:Key="ui_view">View</v:String>
     <v:String x:Key="ui_view_settings">Settings</v:String>
-    <v:String x:Key="ui_exit">Exit</v:String>
+    <v:String x:Key="ui_view_fullscreen">Full screen</v:String>
+    <v:String x:Key="ui_view_dropscreen">Minimize screen</v:String>
+    <v:String x:Key="ui_view_normalscreen">Default crreen</v:String>
+    <v:String x:Key="ui_view_header">Show/hide header</v:String>
+    <v:String x:Key="ui_exit">Выход</v:String>
     <!--endMenu-->
 
     <!--MenuHelp-->

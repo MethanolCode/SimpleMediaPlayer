@@ -8,10 +8,11 @@
         mc:Ignorable="d"
         BorderThickness="6"
         BorderBrush="#2C3531"
-        WindowStyle="None"
         KeyDown="Window_KeyDown"
+        WindowStyle="None"
         KeyUp="Window_KeyUp"
-        Title="SimpleMediaPlayer" Height="768" Width="1024">
+        AllowDrop="True"
+        Title="SimpleMediaPlayer" Height="480" Width="854">
     <!--Контекстное меню-->
     <Window.Resources>
         <ContextMenu x:Key="contextMenu">
@@ -27,11 +28,13 @@
                 <MenuItem Header="0.5" Click="MenuItem_Speed_Click"></MenuItem>
                 <MenuItem Header="0.25" Click="MenuItem_Speed_Click"></MenuItem>
             </MenuItem>
-            <MenuItem Background="#483D8B" Header="{DynamicResource ui_view}">
-                <MenuItem Background="#483D8B" Header="{DynamicResource ui_view_settings}"/>
-                <MenuItem Background="#483D8B" Click="Fullscreen_Click" Header="{DynamicResource ui_no_translate}"/>
-                <MenuItem Background="#483D8B" Click="Drop_Click" Header="{DynamicResource ui_no_translate}"/>
-                <MenuItem Background="#483D8B" Click="Normalized_Click" Header="{DynamicResource ui_no_translate}"/>
+            <MenuItem Header="{DynamicResource ui_view}">
+                <MenuItem Header="{DynamicResource ui_view_settings}">
+                    <MenuItem Click="Header_Viev_Click" Header="{DynamicResource ui_view_header}"/>
+                </MenuItem>
+                <MenuItem Click="Fullscreen_Click" Header="{DynamicResource ui_view_fullscreen}"/>
+                <MenuItem Click="Drop_Click" Header="{DynamicResource ui_view_dropscreen}"/>
+                <MenuItem Click="Normalized_Click" Header="{DynamicResource ui_view_normalscreen}"/>
             </MenuItem>
             <Separator/>
             <MenuItem Header="Close" Click="Exit_Click"/>
@@ -39,7 +42,7 @@
     </Window.Resources>
     <Grid Background="#FF557A95" MouseRightButtonDown="Grid_MouseRightButtonDown">
         <!--Меню-->
-        <Menu x:Name="main_Menu" Height="22" VerticalAlignment="Top" Background="#483D8B" 
+        <Menu x:Name="main_Menu" MouseLeftButtonDown="main_MouseDown" Height="22" VerticalAlignment="Top" Background="#483D8B" 
               Foreground="WhiteSmoke" FontWeight="Thin" Grid.ColumnSpan="2">
             <MenuItem x:Name="main_Menu_File" Header="{DynamicResource ui_file}">
                 <MenuItem x:Name="main_Menu_File_OpenFile" Header="{DynamicResource ui_open_file}"
@@ -59,20 +62,22 @@
             </MenuItem>
             <MenuItem x:Name="menuLanguage" Background="#483D8B" Header="{DynamicResource ui_language}"/>
             <MenuItem x:Name="menuView" Background="#483D8B" Header="{DynamicResource ui_view}">
-                <MenuItem Background="#483D8B" Header="{DynamicResource ui_view_settings}"/>
-                <MenuItem Background="#483D8B" Click="Fullscreen_Click" Header="{DynamicResource ui_no_translate}"/>
-                <MenuItem Background="#483D8B" Click="Drop_Click" Header="{DynamicResource ui_no_translate}"/>
-                <MenuItem Background="#483D8B" Click="Normalized_Click" Header="{DynamicResource ui_no_translate}"/>
+                <MenuItem Header="{DynamicResource ui_view_settings}">
+                    <MenuItem Click="Header_Viev_Click" Header="{DynamicResource ui_view_header}"/>
+                </MenuItem>
+                <MenuItem Background="#483D8B" Click="Fullscreen_Click" Header="{DynamicResource ui_view_fullscreen}"/>
+                <MenuItem Background="#483D8B" Click="Drop_Click" Header="{DynamicResource ui_view_dropscreen}"/>
+                <MenuItem Background="#483D8B" Click="Normalized_Click" Header="{DynamicResource ui_view_normalscreen}"/>
             </MenuItem>
-            <MenuItem Background="IndianRed" Foreground="#483D8B" FontSize="14" FontWeight="Bold" Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
+            <MenuItem x:Name="main_Close" Background="IndianRed" Foreground="#483D8B" FontSize="14" FontWeight="Bold" Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
         </Menu>
         <!--Плеер-->
         <Grid Margin="5,25,5,5" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="0.04*"></RowDefinition>
-                <RowDefinition Height="0.04*"></RowDefinition>
-                <RowDefinition Height="0.025*"></RowDefinition>
+                <RowDefinition Height="0.045*"></RowDefinition>
+                <RowDefinition Height="0.035*"></RowDefinition>
             </Grid.RowDefinitions>
             <Border Background="#2C3545" BorderThickness="3" BorderBrush="#5C3545">
                 <MediaElement x:Name="mainMedia" Stretch="Fill" LoadedBehavior="Manual" UnloadedBehavior="Stop" 
@@ -111,9 +116,10 @@
                     </Button.ToolTip>
                 </Button>
                 <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
-                    <TextBlock x:Name="timeLost" Text="{DynamicResource ui_no_translate}" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite" Margin="20,0,0,0"/>
-                    <TextBlock x:Name="timeEnd" Text="{DynamicResource ui_no_translate}" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
-                    <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite" Margin="200,0,0,0"/>
+                    <TextBlock x:Name="timeLost" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite" Margin="20,0,0,0"/>
+                    <TextBlock Text=" / " FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
+                    <TextBlock x:Name="timeEnd" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
+                    <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite" Margin="150,0,0,0"/>
                     <Slider x:Name="volumeSlider" ValueChanged="ChangeMediaVolume" Cursor="Hand"
                         Minimum="0" Maximum="1" Value="0.45" Width="175"/>
                 </StackPanel>

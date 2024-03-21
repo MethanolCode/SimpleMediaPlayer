@@ -3,6 +3,7 @@ using SimpleMediaPlayer.Extensions;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -128,6 +129,19 @@ namespace SimpleMediaPlayer
         {
             WindowState = WindowState.Normal;
         }
+        
+        private void Header_Viev_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowStyle == WindowStyle.ToolWindow) {
+                WindowStyle = WindowStyle.None;
+                main_Close.Visibility = Visibility.Visible;
+            }
+            else if (WindowStyle == WindowStyle.None)
+            {
+                WindowStyle = WindowStyle.ToolWindow;
+                main_Close.Visibility = Visibility.Collapsed;
+            }
+        }
 
         //-----------------------------------------------------------
         //Функции и методы медиа элемента и связанных с ним контролов
@@ -202,6 +216,7 @@ namespace SimpleMediaPlayer
             {
                 SMP_Play.IsEnabled = false;
                 SMP_Pause.IsEnabled = true;
+                SMP_Stop.IsEnabled = true;
                 SMP_Play.Opacity = 0.5;
                 SMP_Pause.Opacity = 1.0;
             }
@@ -209,6 +224,7 @@ namespace SimpleMediaPlayer
             {
                 SMP_Play.IsEnabled = true;
                 SMP_Pause.IsEnabled = false;
+                SMP_Stop.IsEnabled = false;
                 SMP_Play.Opacity = 1.0;
                 SMP_Pause.Opacity = 0.5;
             }
@@ -242,13 +258,18 @@ namespace SimpleMediaPlayer
                     mainMedia.Position = TimeSpan.FromSeconds(timelineSlider.Value);
                     break;
                 case Key.Space:
-                    if (SMP_Play.IsEnabled == false) {
+                    if (mainMedia.GetMediaState() == MediaState.Pause) {
                         mainMedia.Play();
                         EnableButtons(true);
                     }
-                    else if(SMP_Play.IsEnabled == true) {
+                    else if(mainMedia.GetMediaState() == MediaState.Play) {
                         mainMedia.Pause();
                         EnableButtons(false);
+                    }
+                    else if (mainMedia.GetMediaState() == MediaState.Manual)
+                    {
+                        mainMedia.Play();
+                        EnableButtons(true);
                     }
                     break;
                 default:
