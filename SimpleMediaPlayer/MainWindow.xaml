@@ -10,6 +10,7 @@
         BorderBrush="#2C3531"
         WindowStyle="None"
         KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp"
         Title="SimpleMediaPlayer" Height="768" Width="1024">
     <!--Контекстное меню-->
     <Window.Resources>
@@ -75,7 +76,7 @@
             </Grid.RowDefinitions>
             <Border Background="#2C3545" BorderThickness="3" BorderBrush="#5C3545">
                 <MediaElement x:Name="mainMedia" Stretch="Fill" LoadedBehavior="Manual" UnloadedBehavior="Stop" 
-                      MediaOpened="MediaElement_MediaOpened" MediaEnded="MediaElement_MediaEnded" MediaFailed="MediaElement_MediaFailed" 
+                      MediaOpened="MediaElement_MediaOpened" MediaEnded="MediaElement_MediaEnded" MediaFailed="MediaElement_MediaFailed"
                       Grid.Row="0" ScrubbingEnabled="True"/>
             </Border>
             <StackPanel Grid.Row="2" Orientation="Horizontal">
@@ -110,12 +111,23 @@
                     </Button.ToolTip>
                 </Button>
                 <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
-                    <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite"></TextBlock>
+                    <TextBlock x:Name="timeLost" Text="{DynamicResource ui_no_translate}" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite" Margin="20,0,0,0"/>
+                    <TextBlock x:Name="timeEnd" Text="{DynamicResource ui_no_translate}" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
+                    <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite" Margin="200,0,0,0"/>
                     <Slider x:Name="volumeSlider" ValueChanged="ChangeMediaVolume" Cursor="Hand"
                         Minimum="0" Maximum="1" Value="0.45" Width="175"/>
                 </StackPanel>
             </StackPanel>
-            <Slider x:Name="timelineSlider" Grid.Row="1" ValueChanged="timelineSlider_ValueChanged" Margin="3,0,3,0"/>
+            <Slider x:Name="timelineSlider" Grid.Row="1" ValueChanged="timelineSlider_ValueChanged" Margin="3,0,3,0">
+                <Slider.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource ui_no_translate}"/>
+                            <TextBlock Text="{DynamicResource ui_no_translate}"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Slider.ToolTip>
+            </Slider>
             <StackPanel Grid.Row="3" Mouse.MouseDown="main_MouseDown" Orientation="Horizontal" >
                 <TextBlock x:Name="footerInfoBarName" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
                 <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>

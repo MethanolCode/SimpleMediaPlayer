@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
+using SimpleMediaPlayer.Extensions;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +23,7 @@ namespace SimpleMediaPlayer
     public partial class MainWindow : Window
     {           
         DispatcherTimer timer;
+        string OpenedFilePath;
         public MainWindow()
         {
             InitializeComponent();
@@ -71,20 +74,21 @@ namespace SimpleMediaPlayer
             {
                 CultureInfo lang = (CultureInfo)mi.Tag;
                 if (lang != null) App.Language = lang;
+                footerInfoBarLocale.Text = "Localization: " + lang?.ToString();
             }
         }
         //Открытие файла через диалоговое окно
         private void main_Menu_File_OpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "All Files|*.*" +
+            open.Filter = "All Files|*.*|" +
                           "Based Video formats|*.mkv;*.webm;*.avi;*.ogv;*.gif;*.gifv;*.wmv;" +
                           "*.amv;*.mpg;*.mpeg;*.mp4;*.mpe;*.mpv;*.m2v;*.svi;*.mxf|" +
                           "Based Audio formats|*.aac;*.flac;*.dvf;*.m4a;*.m4b;*.mp3;*.mpc;*.ogg;" +
-                          "*.oga;*.raw;*.voc;*.wav;*.wv;*.webm;*.mp4|";
+                          "*.oga;*.raw;*.voc;*.wav;*.wv;*.webm;*.mp4";
             if (open.ShowDialog() == true)
             {
-                string OpenedFilePath = open.FileName;
+                OpenedFilePath = open.FileName;
                 mainMedia.Source = new Uri(OpenedFilePath);
             }
         }
@@ -109,10 +113,7 @@ namespace SimpleMediaPlayer
         //Обработчик для перемещения при нажатии 
         private void main_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
         private void Fullscreen_Click(object sender, RoutedEventArgs e)
         {
@@ -140,9 +141,11 @@ namespace SimpleMediaPlayer
         //При открытии медиа
         private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
         {
+            footerInfoBarName.Text = "Media file: " + OpenedFilePath;
             TimeSpan ts = mainMedia.NaturalDuration.TimeSpan;
             timelineSlider.Minimum = 0;
             timelineSlider.Maximum = ts.TotalSeconds;
+            timeEnd.Text = ts.ToString();
             timer.Start();
         }
         //При завершении медиа
@@ -172,16 +175,19 @@ namespace SimpleMediaPlayer
         private void MenuItem_Speed_Click(object sender, RoutedEventArgs e)
         {
             mainMedia.SpeedRatio = Convert.ToDouble(((MenuItem)sender).Header, new CultureInfo("en-us"));
+            footerInfoBarSpeed.Text = "Media speed: " + mainMedia.SpeedRatio;
         }
         //Таймлайн
         private void timelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             mainMedia.Position = TimeSpan.FromSeconds(timelineSlider.Value);
+            timeLost.Text = mainMedia.Position.ToString(@"hh\:mm\:ss");
         }
-        //Таймер
+        //Таймер 
         void timer_Tick(object sender, EventArgs e)
         {
             timelineSlider.Value = mainMedia.Position.TotalSeconds;
+            timeLost.Text = mainMedia.Position.ToString(@"hh\:mm\:ss");
         }
         //Настройка громкости
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
@@ -211,6 +217,10 @@ namespace SimpleMediaPlayer
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            if (mainMedia.GetMediaState() == MediaState.Play && (e.Key == Key.Left || e.Key == Key.Right))
+            {
+                mainMedia.Pause();
+            }
             switch (e.Key)
             {
                 case Key.Up:
@@ -224,11 +234,11 @@ namespace SimpleMediaPlayer
                     footerInfoBarVolume.Text = "Media volume: " + (Math.Round(mainMedia.Volume, 3) * 100).ToString() +"%";
                     break;
                 case Key.Left:
-                    timelineSlider.Value -= 0.05;
+                    timelineSlider.Value -= 0.5;
                     mainMedia.Position = TimeSpan.FromSeconds(timelineSlider.Value);
                     break;
                 case Key.Right:
-                    timelineSlider.Value += 0.05;
+                    timelineSlider.Value += 0.5;
                     mainMedia.Position = TimeSpan.FromSeconds(timelineSlider.Value);
                     break;
                 case Key.Space:
@@ -243,6 +253,14 @@ namespace SimpleMediaPlayer
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(mainMedia.GetMediaState() == MediaState.Pause && (e.Key == Key.Left || e.Key == Key.Right))
+            {
+                mainMedia.Play();
             }
         }
         //-------------------------------
