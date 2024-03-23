@@ -42,7 +42,7 @@
     </Window.Resources>
     <Grid Background="#FF557A95" MouseRightButtonDown="Grid_MouseRightButtonDown">
         <!--Меню-->
-        <Menu x:Name="main_Menu" MouseLeftButtonDown="main_MouseDown" Height="22" VerticalAlignment="Top" Background="#483D8B" 
+        <Menu x:Name="main_Menu" Height="22" VerticalAlignment="Top" Background="#483D8B" 
               Foreground="WhiteSmoke" FontWeight="Thin" Grid.ColumnSpan="2">
             <MenuItem x:Name="main_Menu_File" Header="{DynamicResource ui_file}">
                 <MenuItem x:Name="main_Menu_File_OpenFile" Header="{DynamicResource ui_open_file}"
@@ -70,22 +70,30 @@
                 <MenuItem Background="#483D8B" Click="Normalized_Click" Header="{DynamicResource ui_view_normalscreen}"/>
             </MenuItem>
             <MenuItem x:Name="main_Close" Background="IndianRed" Foreground="#483D8B" FontSize="14" FontWeight="Bold" Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
+            <TextBlock x:Name="Mover" MouseLeftButtonDown="main_Menu_MouseLeftButtonDown" Cursor="SizeAll" MinWidth="600"></TextBlock>
         </Menu>
         <!--Плеер-->
-        <Grid Margin="5,25,5,5" >
+        <Grid x:Name="content_Grid" Margin="5,25,5,5" MouseMove="RowDefinition_MouseMove">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="0.04*"></RowDefinition>
-                <RowDefinition Height="0.045*"></RowDefinition>
+                <RowDefinition Height="0.055*"></RowDefinition>
                 <RowDefinition Height="0.035*"></RowDefinition>
             </Grid.RowDefinitions>
+            <Image x:Name="mediaPlayStopButton" Source="icons/Play.png" MouseDown="mediaPlayStopButton_MouseDown" Grid.Row="0" Height="75" Width="75" Margin="0,0,0,0" Panel.ZIndex="999" ImageFailed="mediaPlayStopButton_ImageFailed"/>
             <Border Background="#2C3545" BorderThickness="3" BorderBrush="#5C3545">
                 <MediaElement x:Name="mainMedia" Stretch="Fill" LoadedBehavior="Manual" UnloadedBehavior="Stop" 
                       MediaOpened="MediaElement_MediaOpened" MediaEnded="MediaElement_MediaEnded" MediaFailed="MediaElement_MediaFailed"
-                      Grid.Row="0" ScrubbingEnabled="True"/>
+                      Grid.Row="0" ScrubbingEnabled="True">
+                    <MediaElement.InputBindings>
+                         <MouseBinding MouseAction="LeftDoubleClick"
+                            Command="{Binding }"
+                         />
+                    </MediaElement.InputBindings>
+                </MediaElement>
             </Border>
             <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button x:Name="SMP_Play" Height="20" Width="75" Content="{DynamicResource ui_play}" Cursor="Hand" Click="SMP_Play_Click">
+                <Button x:Name="SMP_Play" Height="20" Width="75" Content="{DynamicResource ui_play}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Play_Click">
                     <Button.ToolTip>
                         <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
                             <StackPanel>
@@ -95,7 +103,7 @@
                         </ToolTip>
                     </Button.ToolTip>
                 </Button>
-                <Button x:Name="SMP_Pause" Height="20" Width="75" Content="Pause" Cursor="Hand" Click="SMP_Pause_Click">
+                <Button x:Name="SMP_Pause" Height="20" Width="75" Content="{DynamicResource ui_pause}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Pause_Click">
                     <Button.ToolTip>
                         <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
                             <StackPanel>
@@ -105,7 +113,7 @@
                         </ToolTip>
                     </Button.ToolTip>
                 </Button>
-                <Button x:Name="SMP_Stop" Height="20" Width="74" Content="{DynamicResource ui_stop}" Cursor="Hand" Click="SMP_Stop_Click">
+                <Button x:Name="SMP_Stop" Height="20" Width="75" Content="{DynamicResource ui_stop}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Stop_Click">
                     <Button.ToolTip>
                         <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
                             <StackPanel>
@@ -134,7 +142,7 @@
                     </ToolTip>
                 </Slider.ToolTip>
             </Slider>
-            <StackPanel Grid.Row="3" Mouse.MouseDown="main_MouseDown" Orientation="Horizontal" >
+            <StackPanel Grid.Row="3" Orientation="Horizontal" >
                 <TextBlock x:Name="footerInfoBarName" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
                 <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
                 <TextBlock x:Name="footerInfoBarSpeed" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>

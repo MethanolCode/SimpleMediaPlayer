@@ -18,16 +18,48 @@ using System.Windows.Threading;
 
 namespace SimpleMediaPlayer
 {
+    // Create a class that implements ICommand and accepts a delegate.
+    public class SimpleDelegateCommand : ICommand
+    {
+        // Specify the keys and mouse actions that invoke the command. 
+        public Key GestureKey { get; set; }
+        public ModifierKeys GestureModifier { get; set; }
+        public MouseAction MouseGesture { get; set; }
+
+        Action<object> _executeDelegate;
+
+        public SimpleDelegateCommand(Action<object> executeDelegate)
+        {
+            _executeDelegate = executeDelegate;
+        }
+
+        public void Execute(object parameter)
+        {
+            _executeDelegate(parameter);
+        }
+
+        public bool CanExecute(object parameter) { return true; }
+        public event EventHandler CanExecuteChanged;
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {           
+    {
         DispatcherTimer timer;
+        GridLength gridRowOne;
+        GridLength gridRowTwo;
+        GridLength gridRowThree;
         string OpenedFilePath;
         public MainWindow()
         {
             InitializeComponent();
+            Uri iconUri = new Uri("icons/icon.ico", UriKind.Relative);
+            Icon = BitmapFrame.Create(iconUri);
+            gridRowOne = content_Grid.RowDefinitions[1].Height;
+            gridRowTwo = content_Grid.RowDefinitions[2].Height;
+            gridRowThree = content_Grid.RowDefinitions[3].Height;
             
             //Timer
             timer = new DispatcherTimer();
@@ -111,14 +143,11 @@ namespace SimpleMediaPlayer
         {
             Application.Current.Shutdown();
         }
-        //Обработчик для перемещения при нажатии 
-        private void main_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
-        }
+
         private void Fullscreen_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Maximized;
+            Mover.Width = 1600;
         }
 
         private void Drop_Click(object sender, RoutedEventArgs e)
@@ -128,6 +157,7 @@ namespace SimpleMediaPlayer
         private void Normalized_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Normal;
+            Mover.Width = 600;
         }
         
         private void Header_Viev_Click(object sender, RoutedEventArgs e)
@@ -141,6 +171,17 @@ namespace SimpleMediaPlayer
                 WindowStyle = WindowStyle.ToolWindow;
                 main_Close.Visibility = Visibility.Collapsed;
             }
+        }
+        private void main_Menu_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            if(WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                Mover.Width = 600;
+                DragMove();
+            }
+            else DragMove();
         }
 
         //-----------------------------------------------------------
@@ -172,11 +213,13 @@ namespace SimpleMediaPlayer
         {
             mainMedia.Play();
             EnableButtons(true);
+            MinimizeControls();
         }
         // Пауза
         private void SMP_Pause_Click(object sender, RoutedEventArgs e)
         {
             mainMedia.Pause();
+            ShowControls();
             EnableButtons(false);
         }
         //Остановить медиа
@@ -260,10 +303,12 @@ namespace SimpleMediaPlayer
                 case Key.Space:
                     if (mainMedia.GetMediaState() == MediaState.Pause) {
                         mainMedia.Play();
+                        MinimizeControls();
                         EnableButtons(true);
                     }
                     else if(mainMedia.GetMediaState() == MediaState.Play) {
                         mainMedia.Pause();
+                        ShowControls();
                         EnableButtons(false);
                     }
                     else if (mainMedia.GetMediaState() == MediaState.Manual)
@@ -284,6 +329,62 @@ namespace SimpleMediaPlayer
                 mainMedia.Play();
             }
         }
-        //-------------------------------
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
+            content_Grid.RowDefinitions[1].Height = new GridLength(0);
+            content_Grid.RowDefinitions[2].Height = new GridLength(0);
+            content_Grid.RowDefinitions[3].Height = new GridLength(0);
+        }
+
+        private void ShowControls()
+        {
+            if (content_Grid.RowDefinitions[1].Height == new GridLength(0))
+            {
+                content_Grid.RowDefinitions[1].Height = gridRowOne;
+                content_Grid.RowDefinitions[2].Height = gridRowTwo;
+                content_Grid.RowDefinitions[3].Height = gridRowThree;
+
+            }
+        }
+
+        private void MinimizeControls()
+        {
+            if (content_Grid.RowDefinitions[1].Height != new GridLength(0))
+            {
+                content_Grid.RowDefinitions[1].Height = new GridLength(0);
+                content_Grid.RowDefinitions[2].Height = new GridLength(0);
+                content_Grid.RowDefinitions[3].Height = new GridLength(0);
+            }
+        }
+
+        private void RowDefinition_MouseMove(object sender, MouseEventArgs e)
+        {
+/*            if (mainMedia.GetMediaState() == MediaState.Play)
+            {
+                ShowControls();
+                Task.Delay(3000);
+                Point position = e.GetPosition(this);
+                if (Math.Abs(position.X - startPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(position.Y - startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    ShowControls();
+                    Task.Delay(3000);
+                }
+            }*/
+        }
+
+        private void mediaPlayStopButton_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show("Error: image failed.", "Image Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void mediaPlayStopButton_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            mediaPlayStopButton.Visibility = Visibility.Collapsed;
+            mainMedia.Play();
+            MinimizeControls();
+        }
     }
 }
