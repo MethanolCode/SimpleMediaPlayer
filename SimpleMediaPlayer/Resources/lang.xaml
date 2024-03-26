@@ -7,6 +7,11 @@
     <v:String x:Key="ui_language">Language</v:String>
     <v:String x:Key="ui_view">View</v:String>
     <v:String x:Key="ui_view_settings">Settings</v:String>
+    <v:String x:Key="ui_view_settings_stretch">Stretch</v:String>
+    <v:String x:Key="ui_view_settings_stretch_fill">Fill</v:String>
+    <v:String x:Key="ui_view_settings_stretch_uniform">Uniform</v:String>
+    <v:String x:Key="ui_view_settings_stretch_uniformtofill">Uniform To Fill</v:String>
+    <v:String x:Key="ui_view_settings_stretch_none">None</v:String>
     <v:String x:Key="ui_view_fullscreen">Full screen</v:String>
     <v:String x:Key="ui_view_dropscreen">Minimize screen</v:String>
     <v:String x:Key="ui_view_normalscreen">Default crreen</v:String>
@@ -14,23 +19,23 @@
     <v:String x:Key="ui_exit">Выход</v:String>
     <!--endMenu-->
 
-    <!--MenuHelp-->
-    <!--endMenuHelp-->
-
     <!--Controls-->
     <v:String x:Key="ui_play">Play</v:String>
     <v:String x:Key="ui_pause">Pause</v:String>
     <v:String x:Key="ui_stop">Stop</v:String>
+    <v:String x:Key="ui_volume_scroll">Volume:</v:String>
+    <v:String x:Key="ui_timer">Timer</v:String>
     <!--endControls-->
 
     <!--ControlsHelp-->
-    <v:String x:Key="ui_play_help">Start or continue media playback. If the file has not been selected yet, an error message will be displayed.</v:String>
+    <v:String x:Key="ui_timer_help">Shows the current playback time and the full time of the media file</v:String>
+    <v:String x:Key="ui_play_help">Start or continue media playback. If the file has not been selected yet, an error message will be displayed</v:String>
     <v:String x:Key="ui_pause_help">Pause the media</v:String>
     <v:String x:Key="ui_stop_help">Stop the media file</v:String>
-    <v:String x:Key="ui_volume_scroll">Volume:</v:String>
     <!--endControlsHelp-->
 
     <!--FooterInfoBar-->
+    <v:String x:Key="ui_footer">A basement with current information about the status of the player</v:String>
     <v:String x:Key="ui_footer_no_data">Error: No data</v:String>
     <!--endFooterInfoBar-->
 

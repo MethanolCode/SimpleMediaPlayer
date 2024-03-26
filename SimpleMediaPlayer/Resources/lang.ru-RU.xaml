@@ -7,6 +7,11 @@
     <v:String x:Key="ui_language">Язык</v:String>
     <v:String x:Key="ui_view">Вид</v:String>
     <v:String x:Key="ui_view_settings">Настройки</v:String>
+    <v:String x:Key="ui_view_settings_stretch">Растяжение</v:String>
+    <v:String x:Key="ui_view_settings_stretch_fill">Заполнение</v:String>
+    <v:String x:Key="ui_view_settings_stretch_uniform">Однородное</v:String>
+    <v:String x:Key="ui_view_settings_stretch_uniformtofill">Однородное заполнение</v:String>
+    <v:String x:Key="ui_view_settings_stretch_none">Нет</v:String>
     <v:String x:Key="ui_view_fullscreen">Полный экран</v:String>
     <v:String x:Key="ui_view_dropscreen">Свернуть</v:String>
     <v:String x:Key="ui_view_normalscreen">Стандартный размер</v:String>
@@ -14,23 +19,23 @@
     <v:String x:Key="ui_exit">Выход</v:String>
     <!--endMenu-->
 
-    <!--MenuHelp-->
-    <!--endMenuHelp-->
-
     <!--Controls-->
-    <v:String x:Key="ui_play">Продолжить воспроизведение</v:String>
+    <v:String x:Key="ui_play">Продолжить</v:String>
     <v:String x:Key="ui_pause">Пауза</v:String>
     <v:String x:Key="ui_stop">Стоп</v:String>
     <v:String x:Key="ui_volume_scroll">Громкость:</v:String>
+    <v:String x:Key="ui_timer">Таймер</v:String>
     <!--endControls-->
 
     <!--ControlsHelp-->
-    <v:String x:Key="ui_play_help">Начать или продолжить воспроизведение медиа. Если файл еще не выбран, будет выведено сообщение об ошибке.</v:String>
+    <v:String x:Key="ui_timer_help">Показывает текущее время воспроизведения и полное время медиа файла</v:String>
+    <v:String x:Key="ui_play_help">Начать или продолжить воспроизведение медиа. Если файл еще не выбран, будет выведено сообщение об ошибке</v:String>
     <v:String x:Key="ui_pause_help">Поставить на паузу</v:String>
     <v:String x:Key="ui_stop_help">Остановить воспроизведение медиа</v:String>
     <!--endControlsHelp-->
 
     <!--FooterInfoBar-->
+    <v:String x:Key="ui_footer">Подвал с текущей информацией о состоянии плеера</v:String>
     <v:String x:Key="ui_footer_no_data">Ошибка: нет данных</v:String>
     <!--endFooterInfoBar-->
 

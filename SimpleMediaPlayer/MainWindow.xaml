@@ -5,32 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleMediaPlayer"
         xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-        mc:Ignorable="d"
-        BorderThickness="6"
-        BorderBrush="#2C3531"
-        KeyDown="Window_KeyDown"
-        WindowStyle="None"
-        KeyUp="Window_KeyUp"
-        AllowDrop="True"
+        mc:Ignorable="d" BorderThickness="2" KeyUp="Window_KeyUp"
+        BorderBrush="#2C3531" KeyDown="Window_KeyDown"
+        WindowStyle="None" AllowDrop="True"
         Title="SimpleMediaPlayer" Height="480" Width="854">
-    <!--Контекстное меню-->
     <Window.Resources>
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="#483D8B"/>
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style x:Key="media_controls_button_template" TargetType="Button">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button" >
+                        <Border Background="#008080" BorderBrush="#2F4F4F" Height="25" Width="95" Margin="2,0,2,0" BorderThickness="2" CornerRadius="10">
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ToolTip">
+            <Setter Property="VerticalOffset" Value="10"/>
+            <Setter Property="HorizontalOffset" Value="15"/>
+            <Setter Property="Background" Value="#85AA4030"/>
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="HasDropShadow" Value="False"/>
+            <Setter Property="Placement" Value="Relative"/>
+            <Setter Property="HasDropShadow" Value="False"/>
+        </Style>
         <ContextMenu x:Key="contextMenu">
             <MenuItem Header="{DynamicResource ui_open_file}" Click="main_Menu_File_OpenFile_Click"/>
-            <MenuItem Header="Close file" />
+            <MenuItem Header="Close file"/>
             <Separator/>
             <MenuItem Header="Media Speed">
-                <MenuItem Header="2.0" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="1.5" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="1.25" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="1.0" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="0.75" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="0.5" Click="MenuItem_Speed_Click"></MenuItem>
-                <MenuItem Header="0.25" Click="MenuItem_Speed_Click"></MenuItem>
+                <MenuItem Header="2.0" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="1.5" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="1.25" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="1.0" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="0.75" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="0.5" Click="MenuItem_Speed_Click"/>
+                <MenuItem Header="0.25" Click="MenuItem_Speed_Click"/>
             </MenuItem>
             <MenuItem Header="{DynamicResource ui_view}">
                 <MenuItem Header="{DynamicResource ui_view_settings}">
-                    <MenuItem Click="Header_Viev_Click" Header="{DynamicResource ui_view_header}"/>
+                    <MenuItem Click="menu_header_view_Click" Header="{DynamicResource ui_view_header}"/>
+                    <MenuItem Header="{DynamicResource ui_view_settings_stretch}">
+                        <MenuItem Click="menu_view_stretch_fill_Click" Header="{DynamicResource ui_view_settings_stretch_fill}"/>
+                        <MenuItem Click="menu_view_stretch_uniform_Click" Header="{DynamicResource ui_view_settings_stretch_uniform}"/>
+                        <MenuItem Click="menu_view_stretch_uniformtofill_Click" Header="{DynamicResource ui_view_settings_stretch_uniformtofill}"/>
+                        <MenuItem Click="menu_view_stretch_none_Click" Header="{DynamicResource ui_view_settings_stretch_none}"/>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Click="Fullscreen_Click" Header="{DynamicResource ui_view_fullscreen}"/>
                 <MenuItem Click="Drop_Click" Header="{DynamicResource ui_view_dropscreen}"/>
@@ -40,117 +76,124 @@
             <MenuItem Header="Close" Click="Exit_Click"/>
         </ContextMenu>
     </Window.Resources>
-    <Grid Background="#FF557A95" MouseRightButtonDown="Grid_MouseRightButtonDown">
-        <!--Меню-->
-        <Menu x:Name="main_Menu" Height="22" VerticalAlignment="Top" Background="#483D8B" 
-              Foreground="WhiteSmoke" FontWeight="Thin" Grid.ColumnSpan="2">
+    <Grid x:Name="content_Grid" MouseMove="RowDefinition_MouseMove" Background="#FF557A95" MouseRightButtonDown="Grid_MouseRightButtonDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="18"/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="main_Menu" Height="22" VerticalAlignment="Top" Foreground="WhiteSmoke" FontWeight="Thin" Grid.ColumnSpan="2" Grid.Row="0" Background="#483D8B">
             <MenuItem x:Name="main_Menu_File" Header="{DynamicResource ui_file}">
-                <MenuItem x:Name="main_Menu_File_OpenFile" Header="{DynamicResource ui_open_file}"
-                          Background="#483D8B" Click="main_Menu_File_OpenFile_Click"
-                          />
-                <MenuItem Header="Media Speed" Background="#483D8B">
-                    <MenuItem Header="2.0" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="1.5" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="1.25" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="1.0" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="0.75" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="0.5" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
-                    <MenuItem Header="0.25" Click="MenuItem_Speed_Click" Background="#483D8B"></MenuItem>
+                <MenuItem x:Name="main_Menu_File_OpenFile" Header="{DynamicResource ui_open_file}" Click="main_Menu_File_OpenFile_Click"/>
+                <MenuItem Header="Media Speed">
+                    <MenuItem Header="2.0" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="1.5" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="1.25" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="1.0" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="0.75" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="0.5" Click="MenuItem_Speed_Click"/>
+                    <MenuItem Header="0.25" Click="MenuItem_Speed_Click"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Background="#483D8B" Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
+                <MenuItem Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
             </MenuItem>
             <MenuItem x:Name="menuLanguage" Background="#483D8B" Header="{DynamicResource ui_language}"/>
             <MenuItem x:Name="menuView" Background="#483D8B" Header="{DynamicResource ui_view}">
                 <MenuItem Header="{DynamicResource ui_view_settings}">
-                    <MenuItem Click="Header_Viev_Click" Header="{DynamicResource ui_view_header}"/>
+                    <MenuItem Click="menu_header_view_Click" Header="{DynamicResource ui_view_header}"/>
+                    <MenuItem Header="{DynamicResource ui_view_settings_stretch}">
+                        <MenuItem Click="menu_view_stretch_fill_Click" Header="{DynamicResource ui_view_settings_stretch_fill}"/>
+                        <MenuItem Click="menu_view_stretch_uniform_Click" Header="{DynamicResource ui_view_settings_stretch_uniform}"/>
+                        <MenuItem Click="menu_view_stretch_uniformtofill_Click" Header="{DynamicResource ui_view_settings_stretch_uniformtofill}"/>
+                        <MenuItem Click="menu_view_stretch_none_Click" Header="{DynamicResource ui_view_settings_stretch_none}"/>
+                    </MenuItem>
                 </MenuItem>
-                <MenuItem Background="#483D8B" Click="Fullscreen_Click" Header="{DynamicResource ui_view_fullscreen}"/>
-                <MenuItem Background="#483D8B" Click="Drop_Click" Header="{DynamicResource ui_view_dropscreen}"/>
-                <MenuItem Background="#483D8B" Click="Normalized_Click" Header="{DynamicResource ui_view_normalscreen}"/>
+                \
+                <MenuItem Click="Fullscreen_Click" Header="{DynamicResource ui_view_fullscreen}"/>
+                <MenuItem Click="Drop_Click" Header="{DynamicResource ui_view_dropscreen}"/>
+                <MenuItem Click="Normalized_Click" Header="{DynamicResource ui_view_normalscreen}"/>
             </MenuItem>
             <MenuItem x:Name="main_Close" Background="IndianRed" Foreground="#483D8B" FontSize="14" FontWeight="Bold" Header="{DynamicResource ui_exit}" Click="Exit_Click"/>
-            <TextBlock x:Name="Mover" MouseLeftButtonDown="main_Menu_MouseLeftButtonDown" Cursor="SizeAll" MinWidth="600"></TextBlock>
+            <TextBlock x:Name="Mover" MouseLeftButtonDown="menu_Mover_MouseLeftButtonDown" Cursor="SizeAll" MinWidth="600"/>
         </Menu>
-        <!--Плеер-->
-        <Grid x:Name="content_Grid" Margin="5,25,5,5" MouseMove="RowDefinition_MouseMove">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="0.04*"></RowDefinition>
-                <RowDefinition Height="0.055*"></RowDefinition>
-                <RowDefinition Height="0.035*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Image x:Name="mediaPlayStopButton" Source="icons/Play.png" MouseDown="mediaPlayStopButton_MouseDown" Grid.Row="0" Height="75" Width="75" Margin="0,0,0,0" Panel.ZIndex="999" ImageFailed="mediaPlayStopButton_ImageFailed"/>
-            <Border Background="#2C3545" BorderThickness="3" BorderBrush="#5C3545">
-                <MediaElement x:Name="mainMedia" Stretch="Fill" LoadedBehavior="Manual" UnloadedBehavior="Stop" 
+        <Image x:Name="mediaPlayStopButton" Source="icons/Play.png" Cursor="Hand" MouseDown="mediaPlayStopButton_MouseDown" Grid.Row="1" Height="75" Width="75" Margin="0,0,0,0" Panel.ZIndex="999" ImageFailed="mediaPlayStopButton_ImageFailed"/>
+        <TextBlock x:Name="Volume_Vizor" Margin="10,10,0,0" Grid.Row="1" FontSize="22" Foreground="AntiqueWhite"
+                   Text="45%" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="998" Visibility="Collapsed"/>
+        <Border Background="#2C3545" Grid.Row="1">
+            <MediaElement x:Name="mainMedia" Stretch="Fill" LoadedBehavior="Manual" UnloadedBehavior="Stop" 
                       MediaOpened="MediaElement_MediaOpened" MediaEnded="MediaElement_MediaEnded" MediaFailed="MediaElement_MediaFailed"
-                      Grid.Row="0" ScrubbingEnabled="True">
-                    <MediaElement.InputBindings>
-                         <MouseBinding MouseAction="LeftDoubleClick"
-                            Command="{Binding }"
-                         />
-                    </MediaElement.InputBindings>
-                </MediaElement>
-            </Border>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button x:Name="SMP_Play" Height="20" Width="75" Content="{DynamicResource ui_play}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Play_Click">
-                    <Button.ToolTip>
-                        <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource ui_play}"></TextBlock>
-                                <TextBlock Text="{DynamicResource ui_play_help}"></TextBlock>
-                            </StackPanel>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Button x:Name="SMP_Pause" Height="20" Width="75" Content="{DynamicResource ui_pause}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Pause_Click">
-                    <Button.ToolTip>
-                        <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource ui_pause}"></TextBlock>
-                                <TextBlock Text="{DynamicResource ui_pause_help}"></TextBlock>
-                            </StackPanel>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Button x:Name="SMP_Stop" Height="20" Width="75" Content="{DynamicResource ui_stop}" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="SMP_Stop_Click">
-                    <Button.ToolTip>
-                        <ToolTip Background="#85AA4030" Foreground="White" HasDropShadow="False" Placement="Relative" HorizontalOffset="15" VerticalOffset="10">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource ui_stop}"></TextBlock>
-                                <TextBlock Text="{DynamicResource ui_stop_help}"></TextBlock>
-                            </StackPanel>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
-                    <TextBlock x:Name="timeLost" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite" Margin="20,0,0,0"/>
-                    <TextBlock Text=" / " FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
-                    <TextBlock x:Name="timeEnd" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
-                    <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite" Margin="150,0,0,0"/>
-                    <Slider x:Name="volumeSlider" ValueChanged="ChangeMediaVolume" Cursor="Hand"
-                        Minimum="0" Maximum="1" Value="0.45" Width="175"/>
-                </StackPanel>
-            </StackPanel>
-            <Slider x:Name="timelineSlider" Grid.Row="1" ValueChanged="timelineSlider_ValueChanged" Margin="3,0,3,0">
-                <Slider.ToolTip>
+                      ScrubbingEnabled="True" Focusable="False" Loaded="mainMedia_Loaded">
+                <MediaElement.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding }"/>
+                </MediaElement.InputBindings>
+            </MediaElement>
+        </Border>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button x:Name="SMP_Play" Style="{StaticResource media_controls_button_template}" Content="{DynamicResource ui_play}" Click="SMP_Play_Click">
+                <Button.ToolTip>
                     <ToolTip>
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource ui_no_translate}"/>
-                            <TextBlock Text="{DynamicResource ui_no_translate}"/>
+                            <TextBlock Text="{DynamicResource ui_play}" TextWrapping="Wrap" Width="125"/>
+                            <TextBlock Text="{DynamicResource ui_play_help}" TextWrapping="Wrap" Width="125"/>
                         </StackPanel>
                     </ToolTip>
-                </Slider.ToolTip>
-            </Slider>
-            <StackPanel Grid.Row="3" Orientation="Horizontal" >
-                <TextBlock x:Name="footerInfoBarName" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
-                <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
-                <TextBlock x:Name="footerInfoBarSpeed" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
-                <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
-                <TextBlock x:Name="footerInfoBarLocale" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
-                <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
-                <TextBlock x:Name="footerInfoBarVolume" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
+                </Button.ToolTip>
+            </Button>
+            <Button x:Name="SMP_Pause" Style="{StaticResource media_controls_button_template}" Content="{DynamicResource ui_pause}" Click="SMP_Pause_Click">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource ui_pause}" TextWrapping="Wrap" Width="125"/>
+                            <TextBlock Text="{DynamicResource ui_pause_help}" TextWrapping="Wrap" Width="125"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button x:Name="SMP_Stop" Style="{StaticResource media_controls_button_template}" Content="{DynamicResource ui_stop}" Click="SMP_Stop_Click">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource ui_stop}" TextWrapping="Wrap" Width="125"/>
+                            <TextBlock Text="{DynamicResource ui_stop_help}" TextWrapping="Wrap" Width="125"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
+                <StackPanel.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource ui_timer}" TextWrapping="Wrap" Width="125"/>
+                            <TextBlock Text="{DynamicResource ui_timer_help}" TextWrapping="Wrap" Width="125"/>
+                        </StackPanel>
+                    </ToolTip>
+                </StackPanel.ToolTip>
+                <TextBlock x:Name="timeLost" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite" Margin="20,0,0,0"/>
+                <TextBlock Text=" / " FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
+                <TextBlock x:Name="timeEnd" Text="00:00:00" FontSize="16" FontWeight="Bold" Foreground="AntiqueWhite"/>
             </StackPanel>
-        </Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{DynamicResource ui_volume_scroll}" FontSize="14" Foreground="AntiqueWhite" Width="70" Margin="100,0,0,0"/>
+                <Slider x:Name="volumeSlider" ValueChanged="ChangeMediaVolume" Cursor="Hand"
+                    Minimum="0" Maximum="1" Value="0.45" Width="175" Focusable="False"/>
+            </StackPanel>
+        </StackPanel>
+        <Slider x:Name="timelineSlider" Grid.Row="2" ValueChanged="timelineSlider_ValueChanged" Focusable="False" Margin="3,0,3,0"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <StackPanel.ToolTip>
+                <ToolTip>
+                    <TextBlock Text="{DynamicResource ui_footer}" TextWrapping="Wrap" Width="125"/>
+                </ToolTip>
+            </StackPanel.ToolTip>
+            <TextBlock x:Name="footerInfoBarName" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
+            <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
+            <TextBlock x:Name="footerInfoBarSpeed" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
+            <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
+            <TextBlock x:Name="footerInfoBarLocale" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
+            <Separator BorderThickness="10" Margin="0,0,10,0" BorderBrush="AntiqueWhite"/>
+            <TextBlock x:Name="footerInfoBarVolume" Foreground="AntiqueWhite" Margin="0,0,10,0" Text="{DynamicResource ui_footer_no_data}"/>
+        </StackPanel>
     </Grid>
 </Window>
