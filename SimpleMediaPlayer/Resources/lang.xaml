@@ -16,7 +16,7 @@
     <v:String x:Key="ui_view_dropscreen">Minimize screen</v:String>
     <v:String x:Key="ui_view_normalscreen">Default crreen</v:String>
     <v:String x:Key="ui_view_header">Show/hide header</v:String>
-    <v:String x:Key="ui_exit">Выход</v:String>
+    <v:String x:Key="ui_exit">Exit</v:String>
     <!--endMenu-->
 
     <!--Controls-->

@@ -25,12 +25,22 @@ namespace SimpleMediaPlayer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Globalization.CultureInfo DefaultLanguage {
+        [global::System.Configuration.DefaultSettingValueAttribute("ru-RU")]
+        public string DefaultLanguage {
             get {
-                return ((global::System.Globalization.CultureInfo)(this["DefaultLanguage"]));
+                return ((string)(this["DefaultLanguage"]));
             }
             set {
                 this["DefaultLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.4034.a")]
+        public string Version {
+            get {
+                return ((string)(this["Version"]));
             }
         }
     }

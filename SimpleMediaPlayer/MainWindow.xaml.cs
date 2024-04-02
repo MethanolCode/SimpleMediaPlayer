@@ -18,31 +18,6 @@ using System.Windows.Threading;
 
 namespace SimpleMediaPlayer
 {
-    public class SimpleDelegateCommand : ICommand
-    {
-        public Key GestureKey { get; set; }
-        public ModifierKeys GestureModifier { get; set; }
-        public MouseAction MouseGesture { get; set; }
-
-        Action<object> _executeDelegate;
-
-        public SimpleDelegateCommand(Action<object> executeDelegate)
-        {
-            _executeDelegate = executeDelegate;
-        }
-
-        public void Execute(object parameter)
-        {
-            _executeDelegate(parameter);
-        }
-
-        public bool CanExecute(object parameter) { return true; }
-        public event EventHandler CanExecuteChanged;
-    }
-
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         DispatcherTimer timer;
@@ -51,13 +26,19 @@ namespace SimpleMediaPlayer
         GridLength gridRowOne;
         GridLength gridRowTwo;
         GridLength gridRowThree;
+        double mediaVolume;
         string OpenedFilePath;
 
-        public MainWindow()
+        public MainWindow() 
         {
             InitializeComponent();
+        }
+        //Выполняем при загрузке окна
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             Uri iconUri = new Uri("icons/icon.ico", UriKind.Relative);
             Icon = BitmapFrame.Create(iconUri);
+            Title += " " + Properties.Settings.Default.Version;
             //Сохраняем и задаем изначальные данные
             gridRowNull = content_Grid.RowDefinitions[0].Height;
             gridRowOne = content_Grid.RowDefinitions[2].Height;
@@ -73,6 +54,7 @@ namespace SimpleMediaPlayer
             timer.Tick += new EventHandler(timer_Tick);
             //Работа с локализацией
             App.LanguageChanged += LanguageChanged;
+            //App.Language = Properties.Settings.Default.DefaultLanguage;
             CultureInfo currLang = App.Language;
             menuLanguage.Items.Clear();
             foreach (var lang in App.Languages)
@@ -81,8 +63,6 @@ namespace SimpleMediaPlayer
                 menuLang.Header = lang.DisplayName;
                 menuLang.Tag = lang;
                 menuLang.IsChecked = lang.Equals(currLang);
-                var brush = new SolidColorBrush(Color.FromRgb(72, 61, 139));
-                menuLang.Background = brush;
                 menuLang.Click += ChangeLanguageClick;
                 menuLanguage.Items.Add(menuLang);
             }
@@ -92,7 +72,7 @@ namespace SimpleMediaPlayer
             footerInfoBarVolume.Text = "Media volume: " + mainMedia.Volume.ToString();
             footerInfoBarName.Text = "Media file: None";
         }
-
+        //Ловим ошибки
         private void mediaPlayStopButton_ImageFailed(object sender, ExceptionRoutedEventArgs e) => MessageBox.Show("Error: image failed.", "Image Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e) => MessageBox.Show("...", "MediaFailed", MessageBoxButton.OK, MessageBoxImage.Error);
         //При открытии медиа
@@ -111,7 +91,6 @@ namespace SimpleMediaPlayer
             ShowControls();
             mainMedia.Stop();
             EnableButtons(false);
-
         }
         //Воспроизведение
         private void SMP_Play_Click(object sender, RoutedEventArgs e)
@@ -150,8 +129,14 @@ namespace SimpleMediaPlayer
         //Настройка громкости
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
+            mediaVolume = Math.Round(volumeSlider.Value * 100);
             mainMedia.Volume = (double)volumeSlider.Value;
-            if (mainMedia.Volume >= 0 && footerInfoBarVolume != null) { footerInfoBarVolume.Text = "Media volume: " + (Convert.ToInt32(mainMedia.Volume * 100)).ToString() + "%"; }
+            if (mainMedia.Volume >= 0 && footerInfoBarVolume != null)
+            {
+                footerInfoBarVolume.Text = "Media volume: " + mediaVolume.ToString() + "%";
+                Volume_Vizor.Text = mediaVolume.ToString() + "%";
+                Volume_Vizor.Visibility = Visibility.Visible;
+            }
         }
         //Управление контролами воспроизведения
         private void EnableButtons(bool is_playing)
@@ -174,7 +159,7 @@ namespace SimpleMediaPlayer
             }
             timer.IsEnabled = is_playing;
         }
-
+        //Обработка нажатий клавиш
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (mainMedia.GetMediaState() == MediaState.Play && (e.Key == Key.Left || e.Key == Key.Right))
@@ -186,8 +171,9 @@ namespace SimpleMediaPlayer
                 case Key.Up:
                     volumeSlider.Value += 0.05;
                     mainMedia.Volume = (double)volumeSlider.Value;
-                    footerInfoBarVolume.Text = "Media volume: " + Convert.ToInt32(mainMedia.Volume * 100).ToString() + "%";
-                    Volume_Vizor.Text = mainMedia.Volume + "%";
+                    mediaVolume = Math.Round(volumeSlider.Value * 100);
+                    footerInfoBarVolume.Text = "Media volume: " + mediaVolume.ToString() + "%";
+                    Volume_Vizor.Text = mediaVolume + "%";
                     Volume_Vizor.Visibility = Visibility.Visible;
                     //Task.Delay(15000);
                     //Volume_Vizor.Visibility = Visibility.Collapsed;
@@ -195,8 +181,9 @@ namespace SimpleMediaPlayer
                 case Key.Down:
                     volumeSlider.Value -= 0.05;
                     mainMedia.Volume = (double)volumeSlider.Value;
-                    footerInfoBarVolume.Text = "Media volume: " + (Convert.ToInt32(mainMedia.Volume * 100)).ToString() + "%";
-                    Volume_Vizor.Text = mainMedia.Volume + "%";
+                    mediaVolume = Math.Round(volumeSlider.Value * 100);
+                    footerInfoBarVolume.Text = "Media volume: " + mediaVolume.ToString() + "%";
+                    Volume_Vizor.Text = mediaVolume + "%";
                     Volume_Vizor.Visibility = Visibility.Visible;
                     //Task.Delay(15000);
                     //Volume_Vizor.Visibility = Visibility.Collapsed;
@@ -268,24 +255,7 @@ namespace SimpleMediaPlayer
                 content_Grid.RowDefinitions[4].Height = gridNullLength;
             }
         }
-
-        private void RowDefinition_MouseMove(object sender, MouseEventArgs e)
-        {
-            /*            if (mainMedia.GetMediaState() == MediaState.Play)
-                        {
-                            ShowControls();
-                            Task.Delay(3000);
-                            Point position = e.GetPosition(this);
-                            if (Math.Abs(position.X - startPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                                Math.Abs(position.Y - startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
-                            {
-                                ShowControls();
-                                Task.Delay(3000);
-                            }
-                        }*/
-        }
-        //Кнопка воспроизведения на медиа элементе
-
+        //Кнопка на медиа
         private void mediaPlayStopButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             mediaPlayStopButton.Visibility = Visibility.Collapsed;
@@ -300,6 +270,18 @@ namespace SimpleMediaPlayer
             mainMedia.Play();
             mainMedia.Pause();
             mainMedia.Volume = 0.45;
+        }
+        //При изменении размера шапка показывается или убирается
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(WindowState == WindowState.Maximized) { 
+                WindowStyle = WindowStyle.None;
+                content_Grid.RowDefinitions[0].Height = new GridLength(0);
+            }
+            if (WindowState == WindowState.Normal) { 
+                WindowStyle = WindowStyle.ThreeDBorderWindow;
+                content_Grid.RowDefinitions[0].Height = gridRowNull;
+            }
         }
     }
 }

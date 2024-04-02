@@ -11,9 +11,8 @@ namespace SimpleMediaPlayer
 {
     public partial class MainWindow : Window
     {
-        //Функции локализации
         //После выбора локализации
-        private void LanguageChanged(Object sender, EventArgs e)
+        private void LanguageChanged(object sender, EventArgs e)
         {
             CultureInfo currLang = App.Language;
             foreach (MenuItem i in menuLanguage.Items)
@@ -23,12 +22,12 @@ namespace SimpleMediaPlayer
             }
         }
         //Выбор локализации
-        private void ChangeLanguageClick(Object sender, EventArgs e)
+        private void ChangeLanguageClick(object sender, EventArgs e)
         {
-            MenuItem mi = (MenuItem)sender;
-            if (mi != null)
+            MenuItem mi_language = (MenuItem)sender;
+            if (mi_language != null)
             {
-                CultureInfo lang = (CultureInfo)mi.Tag;
+                CultureInfo lang = (CultureInfo)mi_language.Tag;
                 if (lang != null) App.Language = lang;
                 footerInfoBarLocale.Text = "Localization: " + lang?.ToString();
             }

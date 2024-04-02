@@ -14,41 +14,34 @@ namespace SimpleMediaPlayer
 {
     public partial class MainWindow : Window
     {
-        //Меню - основное и контекстное
         //Контекстное меню приложения
         private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             ContextMenu? cont = (ContextMenu)FindResource("contextMenu");
             cont.PlacementTarget = this; ;
             cont.IsOpen = true;
-
         }
         //Закрыть программу
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure?", "Exit", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) { ExitVoid(); }
+            if (MessageBox.Show("Are you sure?", "Exit", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
+            {
+                Properties.Settings.Default.Save();
+                Application.Current.Shutdown();
+            }
         }
-        //Закрыть приложение
-        private void ExitVoid()
-        {
-            Application.Current.Shutdown();
-        }
-
+        //Полный экран
         private void Fullscreen_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Maximized;
-            content_Grid.RowDefinitions[0].Height = new GridLength(0);
             Mover.Width = 1600;
         }
-
-        private void Drop_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
+        //Свернуть окно
+        private void Drop_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+        //Нормальное состояние окна
         private void Normalized_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Normal;
-            content_Grid.RowDefinitions[0].Height = gridRowNull;
             Mover.Width = 600;
         }
         //Открытие файла через диалоговое окно
@@ -62,6 +55,7 @@ namespace SimpleMediaPlayer
                           "*.oga;*.raw;*.voc;*.wav;*.wv;*.webm;*.mp4";
             if (open.ShowDialog() == true)
             {
+                if (mainMedia.HasAudio || mainMedia.HasVideo) mainMedia.Source = null;
                 SMP_Pause.IsEnabled = false;
                 SMP_Play.IsEnabled = true;
                 SMP_Stop.IsEnabled = false;
@@ -69,18 +63,19 @@ namespace SimpleMediaPlayer
                 OpenedFilePath = open.FileName;
                 mainMedia.Source = new Uri(OpenedFilePath);
             }
+            //else if (open.ShowDialog() == false && (mainMedia.HasAudio || mainMedia.HasVideo)) mainMedia.Play();
         }
         //Показать/скрыть шапку программы
         private void menu_header_view_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowStyle == WindowStyle.ToolWindow)
+            if (WindowStyle == WindowStyle.ThreeDBorderWindow)
             {
                 WindowStyle = WindowStyle.None;
                 main_Close.Visibility = Visibility.Visible;
             }
             else if (WindowStyle == WindowStyle.None)
             {
-                WindowStyle = WindowStyle.ToolWindow;
+                WindowStyle = WindowStyle.ThreeDBorderWindow;
                 main_Close.Visibility = Visibility.Collapsed;
             }
         }
@@ -117,7 +112,6 @@ namespace SimpleMediaPlayer
                 mainMedia.Stretch = Stretch.Uniform;
             }
         }
-
         private void menu_view_stretch_uniformtofill_Click(object sender, RoutedEventArgs e)
         {
             if (mainMedia.Stretch != Stretch.UniformToFill)
@@ -125,13 +119,12 @@ namespace SimpleMediaPlayer
                 mainMedia.Stretch = Stretch.UniformToFill;
             }
         }
-
         private void menu_view_stretch_none_Click(object sender, RoutedEventArgs e)
         {
             if (mainMedia.Stretch != Stretch.None)
             {
                 mainMedia.Stretch = Stretch.None;
             }
-            }
+        }
     }
 }

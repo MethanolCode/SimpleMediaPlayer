@@ -11,12 +11,12 @@
         public Settings() {
             // // Для добавления обработчиков событий для сохранения и изменения параметров раскомментируйте приведенные ниже строки:
             //
-            // this.SettingChanging += this.SettingChangingEventHandler;
+            //this.SettingChanging += this.SettingChangingEventHandler;
             //
-            // this.SettingsSaving += this.SettingsSavingEventHandler;
+            //this.SettingsSaving += this.SettingsSavingEventHandler;
             //
         }
-        
+
         private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
             // Добавьте здесь код для обработки события SettingChangingEvent.
         }
